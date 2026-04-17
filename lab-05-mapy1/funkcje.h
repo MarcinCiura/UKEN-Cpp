@@ -32,6 +32,6 @@ std::string wyznacz_najpopularniejsze_imie(const std::map<int, Student>& studenc
 std::pair<std::string, int> wyznacz_najpopularniejsze_nazwisko(
     const std::map<int, Student>& studenci);
 
-void wypisz_studentow_z_ocenami(const std::map<int, Student>& studenci, std::ostream& strumien);
+void wypisz_studentow_i_ich_oceny(const std::map<int, Student>& studenci, std::ostream& strumien);
 
 int policz_studentow_bez_ocen(const std::map<int, Student>& studenci);

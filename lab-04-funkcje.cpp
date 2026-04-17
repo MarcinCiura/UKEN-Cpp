@@ -29,6 +29,7 @@ int main ()
 // 	// 2. 
 // 	double c = rozklad(silnik);
 // 	// Funkcja srodkowa zwraca wartosc srodkowa pod wzgledem wartosci.
+//      // Na przyklad: srodkowa(5.0, 2.0, 5.5) == 5.0
 // 	double wartosc_srodkowa = srodkowa(a, b, c);
 // 	std::cout << "srodkowa(" << a << ", " << b << ", " << c << ") == " << wartosc_srodkowa << std::endl;
 // 	

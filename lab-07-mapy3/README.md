@@ -5,9 +5,8 @@ Są nazwiska, które można pisać na dwa sposoby, np.
 
 Oba elementy par ó/u, h/ch, rz/ż czytamy tak samo.
 
-Cel dzisiejszych zajęć: znaleźć wszystkie nazwiska, które można zapisywać
-na więcej niż 1 sposób, posortować je wg liczby sposobów
-zapisu malejąco i wypisać.
+Cel dzisiejszych zajęć to znaleźć wszystkie nazwiska, które można zapisywać
+na więcej niż 1 sposób, posortować je wg liczby sposobów zapisu malejąco i wypisać.
 
 1. Google: nazwiska polskie site:gov.pl
 2. Ściągnąć plik CSV (comma-separated values)

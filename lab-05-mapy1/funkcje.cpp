@@ -119,7 +119,7 @@ pair<string, int> wyznacz_najpopularniejsze_nazwisko(const map<int, Student>& st
     return {najpopularniejsze_nazwisko, max_czestosc};
 }
 
-void wypisz_studentow_z_ocenami(const map<int, Student>& studenci, ostream& strumień) {
+void wypisz_studentow_i_ich_oceny(const map<int, Student>& studenci, ostream& strumien) {
 }
 
 int policz_studentow_bez_ocen(const map<int, Student>& studenci) {

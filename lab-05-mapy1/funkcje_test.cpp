@@ -77,7 +77,7 @@ TEST(WyznaczNajpopularniejszeNazwiskoTest, DzialaPoprawnie) {
     ASSERT_EQ(wyznacz_najpopularniejsze_nazwisko(studenci), oczekiwane);
 }
 
-TEST(WypiszStudentowZOcenamiTest, WypisujePoprawnie) {
+TEST(WypiszStudentowIIchOcenyTest, WypisujePoprawnie) {
     map<int, Student> studenci = {
         {903, {"Eryk", "Klimek", {}}},
         {682,
@@ -89,7 +89,7 @@ TEST(WypiszStudentowZOcenamiTest, WypisujePoprawnie) {
           }}},
     };
     stringstream wynik;
-    wypisz_studentow_z_ocenami(studenci, wynik);
+    wypisz_studentow_i_ich_oceny(studenci, wynik);
     string oczekiwane =
         "Henryk Wozniak (682)\n"
         "\tprogramowanie\t2.5 3.5 \n"

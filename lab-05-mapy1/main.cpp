@@ -64,6 +64,6 @@ int main() {
         wczytaj_oceny(strumien, &studenci);
         strumien.close();
     }
-    wypisz_studentow_z_ocenami(studenci, cout);
+    wypisz_studentow_i_ich_oceny(studenci, cout);
     cout << "liczba studentow bez ocen: " << policz_studentow_bez_ocen(studenci) << endl;
 }

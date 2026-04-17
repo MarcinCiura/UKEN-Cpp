@@ -1,10 +1,17 @@
 Laboratorium z programowania obiektowego
 ========================================
 
-## Zadanie 4: mapy
+## Zadanie 5: mapy
 
+Proszę przeczytać ten plik README od początku do końca.
 
-Program kolejno:
+Ten plik README zawiera najpierw opis działania programu,
+który wywołuje różne funkcje, a potem opis tego, jak testować
+te funkcje i uruchomić ten program.
+
+---------------------------------------
+
+Program `main` kolejno:
 
 1. Tworzy plik `studenci.txt` z losowymi danymi, na przykład taki:
 
@@ -44,20 +51,20 @@ imion lub dowolne z tych nazwisk.
 
 ```
 Henryk Sobczak (229514245)
-  	logika_rozmyta	4.5
-	    matematyka	4 3
+	logika_rozmyta	4.5
+	matematyka	4 3
 Kornelia Krol (295878274)
-	    mikroinformatyka	4.5 4 2
+	mikroinformatyka	4.5 4 2
 Henryk Wozniak (682759817)
 Eryk Klimek (903072088)
-	    filozofia	2 2 2.5
+	filozofia	2 2 2.5
 ```
 
 8. Wypisuje, ilu studentów nie ma zadnej oceny.
 
 ---------------------------------------
 
-W pliku funkcje_test.cpp jest 6 testów.
+W pliku `funkcje_test.cpp` jest 6 testów.
 
 Proszę kolejno wykonywać te kroki:
 
@@ -74,4 +81,4 @@ Proszę kolejno wykonywać te kroki:
 5. jeśli test skończył się z błędem - poprawić funkcję
    i wrocić do kroku 3.
 
-Na koniec proszę uruchomić program. Tadam :-) program działa.
+Na koniec proszę uruchomić program `main`. Tadam :-) program działa.

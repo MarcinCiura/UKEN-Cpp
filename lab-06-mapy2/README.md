@@ -1,10 +1,10 @@
 Laboratorium z programowania obiektowego
 ========================================
 
-## Zadanie 5: mapy
+## Zadanie 6: mapy
 
 
-Program kolejno:
+Program main kolejno:
 
 1. Wczytuje słowa z pliku `slowa.txt`
 
@@ -17,6 +17,8 @@ kolejności punktów. Jeśli 2 części mają tyle samo punktów, sortuje je
 alfabetycznie.
 
 5. Wypisuje te części i ich punkty.
+
+-----------------------------------
 
 Proszę kolejno wykonywać te kroki:
 
