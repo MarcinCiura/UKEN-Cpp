@@ -100,7 +100,7 @@ int main ()
 
 	/* 8. Prosze wypisac najwieksza roznice miedzy kolejnymi elementami tablicy liczby. */	
 	
-	maksimum = std::numeric_limits<double>::min(); // najnizsza mozliwa wartosc
+	maksimum = std::numeric_limits<double>::lowest(); // najnizsza mozliwa wartosc
 
 
 
