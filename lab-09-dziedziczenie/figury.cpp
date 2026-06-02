@@ -5,6 +5,7 @@ class Figura {
 public:
   Figura(int przesuniecie, char znak)
       : przesuniecie_(przesuniecie), znak_(znak) {}
+  virtual ~Figura() = default;
 
   void przesun(int o_ile) { przesuniecie_ += o_ile; }
   virtual void narysuj() const = 0;
