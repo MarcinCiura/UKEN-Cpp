@@ -28,6 +28,3 @@ add_executable(
 target_link_libraries(
   lab05test GTest::gtest_main
 )
-
-#include(GoogleTest)
-#gtest_discover_tests(hello_test)
