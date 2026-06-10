@@ -1,24 +1,23 @@
 Laboratorium z programowania obiektowego
 ========================================
 
-## Laboratorium 10: wątki i procesy
+## Laboratorium 10: wątki i muteksy
 
 ### Wykład
 
 #### Mutex (MUTual EXclusion)
 
-Sekcja krytyczna (ang. critical section) to taki fragment programu,
+Sekcja krytyczna (ang. *critical section*) to taki fragment programu,
 w którym następuje dostęp do współdzielonego zasobu
 (np. zmiennej, pliku, pamięci, bazy danych),
 i który w danym momencie może być wykonywany tylko przez jeden wątek lub proces.
 
 Jeśli dwa lub więcej wątków spróbowałoby jednocześnie wykonać ten fragment kodu.
 to mogłoby dojść do uszkodzenia danych, co w informatyce nazywamy wyścigiem
-(ang. race condition).
+(ang. *race condition*).
 
 Wyobraźmy sobie system bankowy. Masz konto z saldem 100 zł.
-Dwa wątki próbują jednocześnie wypłacić z niego pieniądze
-(np. transakcja kartą i przelew automatyczny).
+Dwa wątki próbują jednocześnie wypłacić z niego pieniądze.
 
 Sekcja krytyczna wygląda tak:
 
@@ -44,13 +43,14 @@ ale stan konta to nadal 50 zł, zamiast 0 zł.
 Bank właśnie stracił pieniądze przez złą synchronizację.
 
 Aby zapobiec takim sytuacjom, stosuje się wzajemne wykluczanie
-(ang. mutual exclusion – w skrócie mutex).
+(ang. *mutual exclusion* – w skrócie mutex).
 Mutex działa jak klucz do toalety w Starbucksie: kto ma klucz,
 ten wchodzi do środka (sekcji krytycznej) i zamyka za sobą drzwi.
 Inni muszą czekać w kolejce, aż ten ktoś wyjdzie i odda klucz.
 
 W C++ zabezpiecza się sekcje krytyczne za pomocą
-zmiennych typu std::mutex i std::lock_guard
+zmiennych typu std::mutex i std::lock_guard,
+czyli strażnik.
 
 ```cpp
 #include <mutex>
@@ -59,13 +59,12 @@ std::mutex mtx;
 
 void wypłaćPieniądze() {
 // lock_guard automatycznie blokuje mutex przy utworzeniu
-// i zwalnia go, gdy pętla/funkcja się kończy (zasada RAII,
-// czyli Resource Acquisition Is Initialization)
+// i zwalnia go, gdy pętla/funkcja się kończy
     std::lock_guard<std::mutex> blokada(mtx);
     // --- POCZĄTEK SEKCJI KRYTYCZNEJ ---
-    double stan_konta = konto.saldo(); // Krok 1: Odczytaj (100 zł)
+    double stan_konta = konto.saldo(); // Krok 1: Odczytaj
     stan_konta -= wypłata;             // Krok 2: Odejmij
-    konto.setSaldo(stan_konta);        // Krok 3: Zapisz (50 zł)
+    konto.setSaldo(stan_konta);        // Krok 3: Zapisz
     // --- KONIEC SEKCJI KRYTYCZNEJ ---
 }
 ```
@@ -83,27 +82,34 @@ Wątki pozwalają procesowi robić wiele rzeczy jednocześnie.
 Wątki działają wewnątrz procesu
 
 Uruchomienie nowego procesu zwykle trwa dłużej niż uruchomienie nowego
-wątku. Osobne procesy mogą się komunikować przez wspólne pliki, łącza
-(potoki), kolejki komunikatów lub pamięć wspólną, a osobne wątki mogą
+wątku. Osobne procesy mogą się komunikować przez wspólne pliki, potoki,
+kolejki komunikatów lub pamięć wspólną. Osobne wątki mogą
 korzystać z tych samych zmiennych programu, co łatwiej zaprogramować.
 
 Przykłady użycia wątków:
-- robot indeksujący zasoby Internetu może pobierać każdy plik
-  w osobnym wątku
-- edytor tekstu może mieć kilka wątków, które odpowiadają za
-  odczytywanie znaków wprowadzonych z klawiatury, wyświetlanie tekstu na
-  ekranie, sprawdzanie pisowni
+- Program indeksujący zasoby Internetu może pobierać każdy plik
+  w osobnym wątku.
+- Edytor tekstu może mieć kilka wątków. Inny wątek
+  odczytuje znaki wprowadzane z klawiatury,
+  inny wątek wyświetla tekst na ekranie,
+  jeszcze inny wątek sprawdza pisownię tekstu.
 
-Jeśli wątków w systemie jest więcej niż rdzeni w procesorze,
+Gdy wątków w systemie jest więcej niż rdzeni w procesorze,
 rdzenie często zmieniają wykonywane przez siebie wątki,
 dzięki czemu użytkownikowi komputera wydaje się,
 że wiele wątków działa jednocześnie.
 
-`std::thread`: Klasa reprezentująca pojedynczy wątek.
+`std::thread`: Klasa reprezentująca pojedyńczy wątek.
 Aby uruchomić wątek, wystarczy utworzyć obiekt tej klasy
-i przekazać mu do wykonania funkcję (lub wyrażenie lambda).
+i przekazać mu do wykonania funkcję (lub wyrażenie lambda)
+i jej argumenty.
 
-`join`: Metoda . Gdy wątek-rodzic wywołuje
+UWAGA: Gdy chcemy przekazać argument do wątku
+przez referencję (`&`), trzeba opakować ten argument funkcją `std::ref()`,
+np. `std::thread t(funkcja, std::ref(mojaZmienna));`, bo szablon klasy
+`std::thread` kopiuje argumenty.
+
+`join`: Metoda klasy `std::thread`. Gdy wątek-rodzic wywołuje
 tę metodę na obiekcie klasy `std::thread`, który reprezentuje
 jego wątek potomny, wątek-rodzic czeka, aż ten wątek potomny
 zakończy swoje działanie. Gdy wątek-rodzic nie wywoła `join`
@@ -139,12 +145,7 @@ int main() {
 }
 ```
 
-UWAGA: Gdy chcemy przekazać do wątku
-argument przez referencję (`&`), trzeba go jawnie opakować w `std::ref()`,
-np. `std::thread t(funkcja, std::ref(mojaZmienna));`, bo szablon klasy
-`std::thread` kopiuje argumenty.
-
-#### Jak mierzyć czas w C++
+#### Bonus: jak mierzyć czas w C++
 
 Najlepszy, standardowy i najdokładniejszy sposób pomiaru czasu
 w nowoczesnym C++ to użycie biblioteki `<chrono>`.
@@ -157,14 +158,15 @@ Przykład:
 ```cpp
 #include <iostream>
 #include <chrono>   // Główna biblioteka do pomiaru czasu
-#include <thread>   // Tylko do symulacji pracy (sleep_for)
 
 int main() {
     // Początek
     auto start = std::chrono::steady_clock::now();
 
     // Mierzymy czas działania tego fragmentu kodu
-    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+    for (int i = 0; i < 1'000'000'000; ++i) {
+        // Pusta pętla for
+    }
 
     // Koniec
     auto end = std::chrono::steady_clock::now();
@@ -179,25 +181,30 @@ int main() {
 
 ### Zadanie
 
-Napisać program, który:
+Proszę napisać program, który ma robić rzeczy wymienione w tych 4 punktach:
 
-- utworzy globalną tablicę `200*1000*1000` liczb całkowitych.
-  Proszę nazwać tę tablicę `dane`
-- wypełni tablicę `dane` losowymi liczbami z zakresu 0-999
-- zsumuje liczby w tablicy `dane` za pomocą funkcji
-  `void sumuj_wariant_A(const std::vector<int>& dane, size_t start, size_t end)`
-  z pojedynczą pętlą od `start` do `end-1`,
-  a potem wypisze tę sumę i czas wykonywania tej pętli
-- zsumuje liczby w tablicy `dane` w zmiennej globalnej za pomocą 8 wątków,
-  a potem wypisze tę sumę i czas sumowania. Ta zmienna globalna
-  nie ma być zabezpieczona muteksem. Każdy wątek ma wywoływać funkcję
-  `void sumuj_wariant_B(const std::vector<int>& dane, size_t start, size_t end)`.
-  Ta funkcja ma sumować liczby w tablicy `dane` od indeksu `start` do `end-1`.
-- zsumuje liczby w tablicy `dane` w zmiennej globalnej za pomocą 8 wątków,
-  a potem wypisze tę sumę i czas sumowania. Ta zmienna globalna
-  **ma być zabezpieczona** muteksem. Każdy wątek ma wywoływać funkcję
-  `void sumuj_wariant_C(const std::vector<int>& dane, size_t start, size_t end)`.
-  Ta funkcja ma sumować liczby w tablicy `dane` od indeksu `start` do `end-1`.
+* Program ma utworzyć globalną tablicę liczb całkowitych `dane`.
+  Niech tablica `dane` ma
+  `ROZMIAR_TABLICY = 200'1000'1000` elementów. Potem program ma wypełnić tę tablicę
+  losowymi liczbami całkowitymi z przedziału od 0 do 999.
+
+* Wariant A: Program ma zsumować całą tablicę `dane` od początku do końca 
+  za pomocą jednej pętli, a potem
+  wypisać wynik tego sumowania i to, ile milisekund zajęło to sumowanie.
+
+* Wariant B:
+  Program ma podzielić tablicę `dane` na 8 fragmentów i utworzyć 8 wątków.
+  Każdy wątek tego programu ma dodawać liczby w innym fragmencie
+  do jednej, wspólnej zmiennej globalnej,
+  a potem program ma wypisać obliczoną sumę liczb i czas pracy.
+
+* Wariant C:
+  Program ma podzielić tablicę `dane` na 8 fragmentów i utworzyć 8 wątków.
+  Każdy wątek tego programu ma dodawać liczby w innym fragmencie do zmiennej lokalnej.
+  Dopiero, gdy dany wątek skończy dodawać liczby z całego fragmentu,
+  ma zablokować dla innych wątków dostęp do zmiennej globalnej,
+  dodać swój wynik do tej zmiennej globalnej i skończyć działanie.
+  Potem program ma wypisać obliczoną sumę liczb i czas pracy.
 
 W wariantach B i C proszę tak tworzyć wątki: 
 
