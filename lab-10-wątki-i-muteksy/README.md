@@ -137,11 +137,11 @@ void siekajWarzywa(const std::string& rodzajWarzywa, int ilosc) {
 
 int main() {
     std::cout << "[Main] Zaczynamy przygotowanie obiadu.\n";
-    std::thread watek1(siekajWarzywa, "marchewki", 3);
+    std::thread wątek1(siekajWarzywa, "marchewki", 3);
     std::thread wątek2([]() {
         std::cout << "[Gotowanie] Nastawiam wodę\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        std::cout << "[Gotowanie] Woda się zagotowała :-)\n"
+        std::cout << "[Gotowanie] Woda się zagotowała :-)\n";
     });
     wątek1.join();
     wątek2.join();
