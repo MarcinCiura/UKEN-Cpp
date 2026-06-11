@@ -12,19 +12,19 @@ w którym następuje dostęp do współdzielonego zasobu
 (np. zmiennej, pliku, pamięci, bazy danych),
 i który w danym momencie może być wykonywany tylko przez jeden wątek lub proces.
 
-Jeśli dwa lub więcej wątków spróbowałoby jednocześnie wykonać ten fragment kodu.
+Gdyby wiele wątków spróbowało jednocześnie wykonać ten fragment kodu,
 to mogłoby dojść do uszkodzenia danych, co w informatyce nazywamy wyścigiem
 (ang. *race condition*).
 
 Wyobraźmy sobie system bankowy. Masz konto z saldem 100 zł.
-Dwa wątki próbują jednocześnie wypłacić z niego pieniądze.
+Dwa wątki próbują jednocześnie wpłacić pieniądze na to konto.
 
 Sekcja krytyczna wygląda tak:
 
 ```cpp
 // SEKCJA KRYTYCZNA
 double stan_konta = konto.saldo(); // Krok 1: Odczytaj (100 zł)
-stan_konta -= wypłata;             // Krok 2: Odejmij
+stan_konta += wpłata;              // Krok 2: Dodaj
 konto.setSaldo(stan_konta);        // Krok 3: Zapisz (50 zł)
 ```
 
@@ -34,22 +34,22 @@ Wątek A odczytuje saldo: 100 zł.
 
 Wątek B odczytuje saldo: 100 zł.
 
-Wątek A odejmuje 50 i zapisuje: 50 zł.
+Wątek A dodaje 50 zł i zapisuje: 150 zł.
 
-Wątek B odejmuje 50 i zapisuje: 50 zł.
+Wątek B dodaje 50 zł i zapisuje: 150 zł.
 
-Efekt? Z konta wypłacono łącznie 100 zł (dwa razy po 50),
-ale stan konta to nadal 50 zł, zamiast 0 zł.
-Bank właśnie stracił pieniądze przez złą synchronizację.
+Efekt? Na konto wpłynęło łącznie 100 zł (dwa razy po 50 zł),
+ale stan konta to 150 zł zamiast 200 zł.
+Straciłeś pieniądze przez złą synchronizację.
 
 Aby zapobiec takim sytuacjom, stosuje się wzajemne wykluczanie
 (ang. *mutual exclusion* – w skrócie mutex).
 Mutex działa jak klucz do toalety w Starbucksie: kto ma klucz,
 ten wchodzi do środka (sekcji krytycznej) i zamyka za sobą drzwi.
-Inni muszą czekać w kolejce, aż ten ktoś wyjdzie i odda klucz.
+Inni czekają w kolejce, aż ten ktoś wyjdzie i odda klucz.
 
 W C++ zabezpiecza się sekcje krytyczne za pomocą
-zmiennych typu std::mutex i std::lock_guard,
+zmiennych typu `std::mutex` i `std::lock_guard`,
 czyli strażnik.
 
 ```cpp
@@ -57,13 +57,13 @@ czyli strażnik.
 
 std::mutex mtx;
 
-void wypłaćPieniądze() {
+void wpłaćPieniądze() {
 // lock_guard automatycznie blokuje mutex przy utworzeniu
 // i zwalnia go, gdy pętla/funkcja się kończy
     std::lock_guard<std::mutex> blokada(mtx);
     // --- POCZĄTEK SEKCJI KRYTYCZNEJ ---
     double stan_konta = konto.saldo(); // Krok 1: Odczytaj
-    stan_konta -= wypłata;             // Krok 2: Odejmij
+    stan_konta += wpłata;              // Krok 2: Dodaj
     konto.setSaldo(stan_konta);        // Krok 3: Zapisz
     // --- KONIEC SEKCJI KRYTYCZNEJ ---
 }
@@ -72,19 +72,19 @@ void wypłaćPieniądze() {
 #### Wątki
 
 Program to zestaw instrukcji i danych w pliku, który jest oznaczony
-jako wykonywalny
+jako wykonywalny.
 
-Proces to środowisko, w którym program jest wykonywany
+Proces to środowisko, w którym program jest wykonywany.
 
-Na podstawie jednego programu można zainicjować wiele współbieżnych procesów
+Na podstawie jednego programu można zainicjować wiele współbieżnych procesów.
 
 Wątki pozwalają procesowi robić wiele rzeczy jednocześnie.
-Wątki działają wewnątrz procesu
+Wątki działają wewnątrz procesu.
 
 Uruchomienie nowego procesu zwykle trwa dłużej niż uruchomienie nowego
 wątku. Osobne procesy mogą się komunikować przez wspólne pliki, potoki,
 kolejki komunikatów lub pamięć wspólną. Osobne wątki mogą
-korzystać z tych samych zmiennych programu, co łatwiej zaprogramować.
+korzystać z tych samych zmiennych, a to łatwiej zaprogramować.
 
 Przykłady użycia wątków:
 - Program indeksujący zasoby Internetu może pobierać każdy plik
@@ -99,7 +99,14 @@ rdzenie często zmieniają wykonywane przez siebie wątki,
 dzięki czemu użytkownikowi komputera wydaje się,
 że wiele wątków działa jednocześnie.
 
-`std::thread`: Klasa reprezentująca pojedyńczy wątek.
+Każdy proces zaczyna działać jako jeden wątek.
+Każdy wątek może tworzyć wątki potomne.
+Każdy wątek musi czekać, aż jego wątki potomne się zakończą,
+zanim sam się zakończy. Gdyby którykolwiek wątek się zakończył,
+zanim zakończyły się jego wątki potomne, to proces
+przerwałby się z błędem.
+
+`std::thread` to klasa reprezentująca pojedyńczy wątek.
 Aby uruchomić wątek, wystarczy utworzyć obiekt tej klasy
 i przekazać mu do wykonania funkcję (lub wyrażenie lambda)
 i jej argumenty.
@@ -112,10 +119,7 @@ np. `std::thread t(funkcja, std::ref(mojaZmienna));`, bo szablon klasy
 `join`: Metoda klasy `std::thread`. Gdy wątek-rodzic wywołuje
 tę metodę na obiekcie klasy `std::thread`, który reprezentuje
 jego wątek potomny, wątek-rodzic czeka, aż ten wątek potomny
-zakończy swoje działanie. Gdy wątek-rodzic nie wywoła `join`
-lub `detach` przed usunięciem obiektu wątku potomnego,
-program zakończy działanie z błędem. Proszę spróbować,
-komputer się od tego nie zepsuje :-)
+się zakończy.
 
 ```cpp
 #include <iostream>
@@ -164,7 +168,7 @@ int main() {
     auto start = std::chrono::steady_clock::now();
 
     // Mierzymy czas działania tego fragmentu kodu
-    for (int i = 0; i < 1'000'000'000; ++i) {
+    for (int i = 0; i < 1'000'000'000; ++i) {  // Miliard
         // Pusta pętla for
     }
 
@@ -183,37 +187,44 @@ int main() {
 
 Proszę napisać program, który ma robić rzeczy wymienione w tych 4 punktach:
 
-* Program ma utworzyć globalną tablicę liczb całkowitych `dane`.
-  Niech tablica `dane` ma
-  `ROZMIAR_TABLICY = 200'1000'1000` elementów. Potem program ma wypełnić tę tablicę
+* Program ma utworzyć wektor liczb całkowitych `dane`.
+  Niech liczba elementów wektora `dane` wynosi
+  `ROZMIAR_WEKTORA = 200'1000'1000`, czyli dwieście milionów.
+  Potem program ma wypełnić ten wektor
   losowymi liczbami całkowitymi z przedziału od 0 do 999.
 
-* Wariant A: Program ma zsumować całą tablicę `dane` od początku do końca 
+* Wariant A: Program ma zsumować cały wektor `dane` od początku do końca 
   za pomocą jednej pętli, a potem
   wypisać wynik tego sumowania i to, ile milisekund zajęło to sumowanie.
+  Proszę użyć funkcji `void sumuj_A(const vector<int>& dane, size_t początek, size_t koniec)`
 
 * Wariant B:
-  Program ma podzielić tablicę `dane` na 8 fragmentów i utworzyć 8 wątków.
+  Program ma podzielić wektor `dane` na 8 fragmentów i utworzyć 8 wątków.
   Każdy wątek tego programu ma dodawać liczby w innym fragmencie
   do jednej, wspólnej zmiennej globalnej,
   a potem program ma wypisać obliczoną sumę liczb i czas pracy.
+  Zmienna globalna **nie ma być zabezpieczona** muteksem.
+  Proszę użyć funkcji `void sumuj_B(const vector<int>& dane, size_t początek, size_t koniec)`
 
 * Wariant C:
-  Program ma podzielić tablicę `dane` na 8 fragmentów i utworzyć 8 wątków.
+  Program ma podzielić wektor `dane` na 8 fragmentów i utworzyć 8 wątków.
   Każdy wątek tego programu ma dodawać liczby w innym fragmencie do zmiennej lokalnej.
   Dopiero, gdy dany wątek skończy dodawać liczby z całego fragmentu,
   ma zablokować dla innych wątków dostęp do zmiennej globalnej,
   dodać swój wynik do tej zmiennej globalnej i skończyć działanie.
   Potem program ma wypisać obliczoną sumę liczb i czas pracy.
+  Proszę użyć funkcji `void sumuj_C(const vector<int>& dane, size_t początek, size_t koniec)`
 
-W wariantach B i C proszę tak tworzyć wątki: 
+Proszę tak tworzyć wątki w wariantach B i C: 
 
 ```cpp
 for (int i = 0; i < liczba_wątków; ++i) {
     wątki_B.push_back(std::thread(
-        sumuj_wariant_B,
+        sumuj_B,
         std::ref(dane),
-        ROZMIAR_TABLICY * i / liczba_wątków,
-        ROZMIAR_TABLICY * (i + 1) / liczba_wątków));
+        ROZMIAR_WEKTORA * i / liczba_wątków,
+        ROZMIAR_WEKTORA * (i + 1) / liczba_wątków));
 }
 ```
+Proszę najpierw nie wywoływać metody `join` na utworzonych wątkach.
+Komputer się od tego nie zepsuje :-)
