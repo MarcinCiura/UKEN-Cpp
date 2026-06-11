@@ -189,7 +189,7 @@ Proszę napisać program, który ma robić rzeczy wymienione w tych 4 punktach:
 
 * Program ma utworzyć wektor liczb całkowitych `dane`.
   Niech liczba elementów wektora `dane` wynosi
-  `ROZMIAR_WEKTORA = 200'1000'1000`, czyli dwieście milionów.
+  `ROZMIAR_WEKTORA = 200'000'000`, czyli dwieście milionów.
   Potem program ma wypełnić ten wektor
   losowymi liczbami całkowitymi z przedziału od 0 do 999.
 
