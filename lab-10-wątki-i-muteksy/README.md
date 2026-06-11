@@ -123,8 +123,8 @@ się zakończy.
 
 ```cpp
 #include <iostream>
-#include <thread>   // Główna biblioteka do obsługi wątków
-#include <chrono>   // Potrzebna do odmierzania czasu (uśpienia)
+#include <thread>   // Obsługa wątków
+#include <chrono>   // Odmierzanie czasu (uśpienia)
 
 void siekajWarzywa(const std::string& rodzajWarzywa, int ilosc) {
     for (int i = 1; i <= ilosc; ++i) {
@@ -161,7 +161,7 @@ Przykład:
 
 ```cpp
 #include <iostream>
-#include <chrono>   // Główna biblioteka do pomiaru czasu
+#include <chrono>   // Pomiar czasu
 
 int main() {
     // Początek
