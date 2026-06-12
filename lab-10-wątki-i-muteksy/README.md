@@ -58,8 +58,8 @@ czyli strażnik.
 std::mutex mtx;
 
 void wpłaćPieniądze() {
-// lock_guard automatycznie blokuje mutex przy utworzeniu
-// i zwalnia go, gdy pętla/funkcja się kończy
+    // lock_guard automatycznie blokuje mutex przy utworzeniu
+    // i zwalnia go, gdy blok się kończy
     std::lock_guard<std::mutex> blokada(mtx);
     // --- POCZĄTEK SEKCJI KRYTYCZNEJ ---
     double stan_konta = konto.saldo(); // Krok 1: Odczytaj
@@ -81,9 +81,9 @@ Na podstawie jednego programu można zainicjować wiele współbieżnych proces�
 Wątki pozwalają procesowi robić wiele rzeczy jednocześnie.
 Wątki działają wewnątrz procesu.
 
-Uruchomienie nowego procesu zwykle trwa dłużej niż uruchomienie nowego
-wątku. Osobne procesy mogą się komunikować przez wspólne pliki, potoki,
-kolejki komunikatów lub pamięć wspólną. Osobne wątki mogą
+Uruchomienie nowego wątku zwykle trwa krócej niż uruchomienie nowego
+procesu. O ile osobne procesy mogą się komunikować przez wspólne pliki, potoki,
+kolejki komunikatów lub pamięć wspólną, o tyle osobne wątki mogą
 korzystać z tych samych zmiennych, a to łatwiej zaprogramować.
 
 Przykłady użycia wątków:
@@ -101,7 +101,7 @@ dzięki czemu użytkownikowi komputera wydaje się,
 
 Każdy proces zaczyna działać jako jeden wątek.
 Każdy wątek może tworzyć wątki potomne.
-Każdy wątek musi czekać, aż jego wątki potomne się zakończą,
+Każdy wątek musi poczekać, aż jego wątki potomne się zakończą,
 zanim sam się zakończy. Gdyby którykolwiek wątek się zakończył,
 zanim zakończyły się jego wątki potomne, to proces
 przerwałby się z błędem.
@@ -124,7 +124,7 @@ się zakończy.
 ```cpp
 #include <iostream>
 #include <thread>   // Obsługa wątków
-#include <chrono>   // Odmierzanie czasu (uśpienia)
+#include <chrono>   // Pomiar czasu (uśpienia)
 
 void siekajWarzywa(const std::string& rodzajWarzywa, int ilosc) {
     for (int i = 1; i <= ilosc; ++i) {
