@@ -86,7 +86,7 @@ Proszę dodać w tym pliku dwie klasy:
   Konstruktor klasy `Prostokat` ma przyjmować argumenty
   `szerokosc`, `wysokosc`, `przesuniecie` i `znak`.
 
-* Klasę `ProstokatZPodpisem`, która dziedziczy z klasy `Figura`.
+* Klasę `ProstokatZPodpisem`, która dziedziczy z klasy `Prostokat`.
   Konstruktor klasy `ProstokatZPodpisem` ma przyjmować
   argumenty `szerokosc`, `wysokosc`, `przesuniecie`, `znak`
   i `podpis`.
